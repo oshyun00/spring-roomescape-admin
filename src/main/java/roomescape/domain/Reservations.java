@@ -1,8 +1,11 @@
 package roomescape.domain;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,9 +20,20 @@ public class Reservations {
         return jdbcTemplate.query("select * from reservation", reservationRowMapper());
     }
 
-    public void create(Reservation reservation) {
-        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
-                reservation.getName(), reservation.getDate(), reservation.getTime());
+    public Reservation create(Reservation reservation) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)",
+                    new String[]{"id"});
+            ps.setString(1, reservation.getName());
+            ps.setString(2, reservation.getDate());
+            ps.setString(3, reservation.getTime());
+            return ps;
+        }, keyHolder);
+
+        long id = keyHolder.getKey().longValue();
+        return findById(id);
     }
 
     public Reservation findById(long id) {

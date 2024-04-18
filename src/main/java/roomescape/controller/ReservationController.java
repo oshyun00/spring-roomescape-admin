@@ -23,7 +23,6 @@ import roomescape.dto.ReservationResponseDto;
 public class ReservationController {
     @Autowired
     private Reservations reservations;
-    private AtomicLong index = new AtomicLong(1);
 
     @GetMapping
     public ResponseEntity<List<ReservationResponseDto>> readReservations() {
@@ -36,15 +35,11 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ReservationResponseDto> createReservation(@RequestBody ReservationCreateDto createDto) {
         Reservation reservation = new Reservation(
-                index.getAndIncrement(), createDto.getName(), createDto.getDate(), createDto.getTime()
+                0, createDto.getName(), createDto.getDate(), createDto.getTime()
         );
-        reservations.create(reservation);
-        ReservationResponseDto responseDto = ReservationResponseDto.from(reservation);
+        Reservation createdReservation = reservations.create(reservation);
+        ReservationResponseDto responseDto = ReservationResponseDto.from(createdReservation);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
-    }
-
-    private String redirect() {
-        return "redirect:/admin/reservation";
     }
 
     @DeleteMapping("/{id}")

@@ -9,25 +9,25 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class Times {
+public class TimeRepository {
 
     private JdbcTemplate jdbcTemplate;
 
-    public Times(JdbcTemplate jdbcTemplate) {
+    public TimeRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Time> findAll() {
+    public List<ReservationTime> findAll() {
         return jdbcTemplate.query("select * from reservation_time", reservationTimeRowMapper());
     }
 
-    public Time create(Time time) {
+    public ReservationTime create(ReservationTime reservationTime) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO reservation_time (start_at) VALUES (?)",
                     new String[]{"id"});
-            ps.setString(1, time.getStartAt());
+            ps.setString(1, reservationTime.getStartAt());
             return ps;
         }, keyHolder);
 
@@ -35,22 +35,22 @@ public class Times {
         return findById(id);
     }
 
-    public Time findById(long id) {
+    public ReservationTime findById(long id) {
         return jdbcTemplate.queryForObject("SELECT * from reservation_time WHERE id = ?", reservationTimeRowMapper(),
                 id);
     }
 
-    public void remove(Time time) {
-        jdbcTemplate.update("DELETE FROM reservation_time WHERE id = ?", time.getId());
+    public void remove(ReservationTime reservationTime) {
+        jdbcTemplate.update("DELETE FROM reservation_time WHERE id = ?", reservationTime.getId());
     }
 
-    private RowMapper<Time> reservationTimeRowMapper() {
+    private RowMapper<ReservationTime> reservationTimeRowMapper() {
         return (resultSet, rowNum) -> {
-            Time time = new Time(
+            ReservationTime reservationTime = new ReservationTime(
                     resultSet.getLong("id"),
                     resultSet.getString("start_at"));
 
-            return time;
+            return reservationTime;
         };
     }
 }

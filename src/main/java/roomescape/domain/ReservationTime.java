@@ -1,10 +1,10 @@
 package roomescape.domain;
 
-public class Time {
+public class ReservationTime {
     private long id;
     private String startAt;
 
-    public Time(long id, String startAt) {
+    public ReservationTime(long id, String startAt) {
         this.id = id;
         this.startAt = startAt;
     }

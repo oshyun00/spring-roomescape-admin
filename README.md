@@ -56,3 +56,7 @@
     - [ ] `reservation.html` 파일을 활용한다
     - [ ] reservation 테이블과 reservation_time의 관계를 설정한다
     - [ ] 예약의 시간 타입을 String에서 ReservationTime 객체로 수정한다
+
+#### 9단계
+
+- [ ] 레이어드 아키텍처를 적용하여 레이어별 책임과 역할에 따라 클래스를 분리한

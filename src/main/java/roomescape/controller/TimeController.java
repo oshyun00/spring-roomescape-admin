@@ -14,31 +14,35 @@ import org.springframework.web.bind.annotation.RestController;
 import roomescape.domain.ReservationTime;
 import roomescape.domain.TimeRepository;
 import roomescape.dto.TimeCreateDto;
+import roomescape.service.TimeService;
 
 @RestController
 @RequestMapping("/times")
 public class TimeController {
-    @Autowired
-    private TimeRepository times;
+    private final TimeService timeService;
+
+    public TimeController(TimeService timeService) {
+        this.timeService = timeService;
+    }
 
     @GetMapping
     public ResponseEntity<List<ReservationTime>> readReservations() {
-        List<ReservationTime> findReservationTimes = times.findAll();
+        List<ReservationTime> findReservationTimes = timeService.getAllTime();
         return ResponseEntity.ok(findReservationTimes);
     }
 
     @PostMapping
     public ResponseEntity<ReservationTime> createTime(@RequestBody TimeCreateDto createDto) {
         ReservationTime reservationTime = new ReservationTime(0, createDto.getStartAt());
-        ReservationTime createdReservationTime = times.create(reservationTime);
+        ReservationTime createdReservationTime = timeService.createTime(reservationTime);
         return new ResponseEntity<>(createdReservationTime, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTime(@PathVariable long id) {
-        ReservationTime finReservationTime = times.findById(id);
+        ReservationTime finReservationTime = timeService.findTimeById(id);
 
-        times.remove(finReservationTime);
+        timeService.deleteTime(finReservationTime);
         return ResponseEntity.noContent().build();
     }
 }

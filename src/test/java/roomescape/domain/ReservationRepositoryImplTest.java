@@ -26,15 +26,15 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
  */
 @JdbcTest
 @Sql(scripts = "/reset_test_data.sql", executionPhase = ExecutionPhase.BEFORE_TEST_CLASS)
-class ReservationRepositoryTest {
-    private ReservationRepository reservationRepository;
+class ReservationRepositoryImplTest {
+    private ReservationRepositoryImpl reservationRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUp() {
-        reservationRepository = new ReservationRepository(jdbcTemplate);
+        reservationRepository = new ReservationRepositoryImpl(jdbcTemplate);
     }
 
     @Test
